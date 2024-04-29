@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { Form, Field, Toast, Swipe, SwipeItem, Icon } from 'vant'
+import 'vant/lib/index.css'
+import { Form, Field, Toast, Swipe, SwipeItem, Icon, Button, Tabbar, TabbarItem, Search } from 'vant'
 
 Vue.config.productionTip = false
 Vue.use(Form)
@@ -11,6 +12,10 @@ Vue.use(Toast)
 Vue.use(Swipe)
 Vue.use(SwipeItem)
 Vue.use(Icon)
+Vue.use(Button)
+Vue.use(Tabbar)
+Vue.use(TabbarItem)
+Vue.use(Search)
 
 new Vue({
   router,

@@ -1,4 +1,4 @@
-import { getUserSUMApi, getUserInfoApi } from '../api'
+import { getUserSUMApi, getUserInfoApi } from '@/api'
 
 const UserInfo = {
   state: {

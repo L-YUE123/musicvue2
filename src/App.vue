@@ -18,8 +18,6 @@
   }
   img {
     display: block;
-    width: 100%;
-    height: 100%;
   }
   html , body , #app {
     width: 100vw;

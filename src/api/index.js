@@ -5,7 +5,8 @@ axios.defaults.baseURL = 'https://zyxcl.xyz/music/api'
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
-  config.headers.cookie = localStorage.getItem('curCookie') || ''
+  config.cookie = localStorage.getItem('curCookie') || ''
+	config.params = {...config.params, cookie: localStorage.getItem('curCookie') || ''}
   return config;
 }, function (error) {
   // 对请求错误做些什么
@@ -16,11 +17,26 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
   // 2xx 范围内的状态码都会触发该函数。
   // 对响应数据做点什么
+	console.log('响应', response)
   return response;
 }, function (error) {
   // 超出 2xx 范围的状态码都会触发该函数。
   // 对响应错误做点什么
-  console.log('相应拦截错误', error)
+	if (error.response.status === 301) {
+		console.log('响应拦截错误需要登陆', error)
+		const isGetInfo = async () => {
+			try {
+				const res = await loginTouristApi()
+				console.log('游客登陆返回结果', res)
+				if (res.data.code === 200) {
+					axios.get(error.config.url).then(res => {
+						return res
+					}).catch(e => {})
+				}
+			}catch(e) {}
+		}
+		isGetInfo()
+	}
   return Promise.reject(error);
 });
 
@@ -51,7 +67,7 @@ export const exitLoginApi = () => {
 
 // 获得首页图标
 export const getHomeIconApi = () => {
-  return axios.get('/recommend/resource')
+  return axios.get('/homepage/dragon/ball')
 }
 
 // 首页轮播图
@@ -59,10 +75,7 @@ export const getBannerApi = () => {
   return axios.get('/banner')
 }
 
-getRrecommendApi
-getCommandApi
-getCommitSongApi
-// 获得每日推荐歌单
+// 获得每日推荐歌单  /recommend/resource
 export const getRrecommendApi = () => {
 	return axios.get('/recommend/resource')
 }

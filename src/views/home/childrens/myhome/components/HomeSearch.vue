@@ -3,7 +3,7 @@
     <van-icon name="location-o" />
     <div class="SearchCon" @click="toSearch">
       <van-icon name="search" />
-      <div class="searRight">{{ defaultSerach }}</div>
+      <div class="searRight">{{ defaultSearch }}</div>
     </div>
     <van-icon name="fire-o" />
   </div>
@@ -20,9 +20,13 @@ export default {
   },
   methods: {
     async getdefaultSearch() {
-      const res = searchDefaultApi()
-      console.log('默认搜索', res)
-      this.defaultSerach = res.data.showKeyword
+      try {
+        const res = await searchDefaultApi()
+        console.log('默认搜索', res)
+        this.defaultSearch = res.data.data.showKeyword
+      } catch(e) {
+        console.log(e)
+      }
     },
     toSearch() {
       this.$router.push({
@@ -34,12 +38,15 @@ export default {
     }
   },
   created() {
-    getdefaultSerach()
+    this.getdefaultSearch()
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  @function rem($px) {
+    @return $px / 100 * 1rem;
+  }
   .search {
 		height: rem(70);
 		display: flex;
@@ -54,8 +61,13 @@ export default {
 		line-height: rem(40);
 		display: flex;
 		border: 1px solid #999999;
+    padding-left: rem(14);
 		border-radius: rem(20);
-		justify-content: center;
+    align-items: center;
+    .searRight {
+      flex: 1;
+      text-align: center;
+    }
 	}
 
 </style>

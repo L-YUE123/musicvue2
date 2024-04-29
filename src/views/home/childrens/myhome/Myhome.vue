@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <HomeSerach />
+    <HomeSearch />
     <div class="uni-margin-wrap">
       <van-swipe class="swiper" :autoplay="3000" indicator-color="white">
         <van-swipe-item v-for="item in banners" :key="item.targetId">
@@ -20,8 +20,8 @@
 
 <script>
 import HomeSearch from './components/HomeSearch.vue'
-import SongSheet from './components/SongSheet.vue'
-import { getBannerApi, getHomeIconApi, getRrecommendApi } from '../../../api'
+import SongSheet from './components/Songsheet.vue'
+import { getBannerApi, getHomeIconApi, getRrecommendApi } from '@/api'
 
 export default {
   data () {
@@ -36,25 +36,29 @@ export default {
     async getBanners() {
       try {
         const res = await getBannerApi()
-        this.banners = res.banners
+        console.log('轮播图结果', res)
+        this.banners = res.data.banners
       } catch (e) {}
     },
     async getIcons() {
       try {
         const res = await getHomeIconApi()
-        if (res.code === 200) {
-          this.icons = res.data
+        console.log('首页图标', res)
+        if (res.data.code === 200) {
+          this.icons = res.data.data
         }
       } catch(e) {}
     },
     async getSongSheet() {
-      const res = getRrecommendApi()
-      console.log('每日推荐歌单', res)
-      if (res.code === 200) {
-        const shuffled = res.recommend.slice().sort(() => Math.random() - 0.5)
-        this.recommends = shuffled.slice(0, 5) // 截取前count个元素
-        this.firstCommand = shuffled.slice(5)
-      }
+      try {
+        const res = await getRrecommendApi()
+        console.log('每日推荐歌单', res)
+        if (res.data.code === 200) {
+          const shuffled = res.data.recommend.slice().sort(() => Math.random() - 0.5)
+          this.recommends = shuffled.slice(0, 5) // 截取前count个元素
+          this.firstCommand = shuffled.slice(5)
+        }
+      } catch(e) {}
     },
     clickIcon(name) {
       console.log('跳转到', name)
@@ -65,14 +69,21 @@ export default {
     }
   },
   created() {
-    getBanners()
-    getIcons()
-    getSongSheet()
+    this.getBanners()
+    this.getIcons()
+    this.getSongSheet()
+  },
+  components: {
+    HomeSearch,
+    SongSheet
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  @function rem($px) {
+    @return $px / 100 * 1rem;
+  }
   .home {
 		width: 100%;
 		overflow: hidden;
@@ -85,7 +96,7 @@ export default {
 		border-radius: rem(10);
 		overflow: hidden;
 		margin: 0 auto;
-		image {
+		.swiper, img {
 			width: 100%;
 			height: 100%;
 		}
